@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b1424">
+  <meta name="robots" content="noindex">
+  <title>Share a message</title>
+  <link rel="stylesheet" href="/base.css">
+  <link rel="stylesheet" href="/guest.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div class="avatar" id="avatar" hidden><img id="avatarImg" alt=""></div>
+      <p class="eyebrow">In loving memory</p>
+      <h1 id="title">Share a prayer or a message</h1>
+      <p class="lede">Write a few words in his memory. They will appear on the screen for everyone gathered here to read.</p>
+    </header>
+
+    <form id="form" class="card" novalidate>
+      <div id="error" class="notice notice-error" role="alert" hidden></div>
+
+      <label class="field">
+        <span>Your name</span>
+        <input type="text" id="name" name="name" maxlength="80" autocomplete="name" placeholder="e.g. Maria Santos" required>
+      </label>
+
+      <label class="field">
+        <span>Your prayer or message</span>
+        <textarea id="message" name="message" maxlength="700" rows="6" placeholder="Write your message here…" aria-describedby="count" required></textarea>
+        <small id="count" class="count">0 / 700</small>
+      </label>
+
+      <div class="hp" aria-hidden="true">
+        <label>Website <input type="text" id="website" name="website" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" id="submit">Share message</button>
+      <p class="fineprint">Messages appear on the screen automatically, so please keep them kind.</p>
+    </form>
+
+    <section id="done" class="card done" hidden>
+      <div class="check" aria-hidden="true">✓</div>
+      <h2>Thank you</h2>
+      <p>Your message has been shared. It will appear on the screen shortly.</p>
+      <button type="button" class="btn btn-block" id="again">Write another message</button>
+    </section>
+  </main>
+  <script src="/guest.js"></script>
+</body>
+</html>

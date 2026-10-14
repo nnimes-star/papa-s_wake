@@ -1,0 +1,91 @@
+/* Shared styles for the guest page and the admin panel. */
+:root {
+  --bg: #0b1424;
+  --bg-deep: #060a13;
+  --panel: rgba(255, 255, 255, 0.045);
+  --panel-strong: rgba(255, 255, 255, 0.08);
+  --line: rgba(236, 226, 208, 0.16);
+  --ink: #f3ecdf;
+  --soft: rgba(236, 226, 208, 0.74);
+  --faint: rgba(236, 226, 208, 0.5);
+  --warm: #d9b26f;
+  --danger: #e58a7e;
+  --ok: #86cfa6;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { color-scheme: dark; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.5;
+  background:
+    radial-gradient(ellipse 90% 60% at 20% 0%, #14233f 0%, transparent 70%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+  background-attachment: fixed;
+}
+[hidden] { display: none !important; }
+button, input, textarea { font: inherit; color: inherit; }
+
+.btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel-strong);
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+.btn:hover { background: rgba(255, 255, 255, 0.13); }
+.btn:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--warm);
+  outline-offset: 2px;
+}
+.btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+.btn-primary { background: var(--warm); border-color: var(--warm); color: #1a1408; }
+.btn-primary:hover { background: #e4c07f; }
+.btn-danger { color: var(--danger); border-color: rgba(229, 138, 126, 0.45); background: transparent; }
+.btn-danger:hover { background: rgba(229, 138, 126, 0.14); }
+.btn-small { min-height: 38px; padding: 0.35rem 0.85rem; font-size: 0.92rem; }
+
+.field { display: block; margin-bottom: 1.1rem; }
+.field > span { display: block; margin-bottom: 0.4rem; font-size: 0.95rem; color: var(--soft); }
+input[type="text"], input[type="password"], input[type="number"], input[type="url"], textarea {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.28);
+  font-size: 1rem; /* 16px+ keeps iOS from zooming on focus */
+}
+textarea { resize: vertical; min-height: 9rem; line-height: 1.5; }
+::placeholder { color: var(--faint); }
+
+.notice { margin: 0 0 1rem; padding: 0.7rem 0.9rem; border-radius: 10px; font-size: 0.95rem; }
+.notice-error { background: rgba(229, 138, 126, 0.13); border: 1px solid rgba(229, 138, 126, 0.4); color: #ffd9d3; }
+.notice-ok { background: rgba(134, 207, 166, 0.12); border: 1px solid rgba(134, 207, 166, 0.35); color: #d4f3e1; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* Honeypot: off-screen rather than display:none so naive bots still fill it. */
+.hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }

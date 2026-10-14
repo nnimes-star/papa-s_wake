@@ -1,0 +1,15 @@
+{
+  "name": "memorial-tribute",
+  "version": "1.0.0",
+  "description": "A continuous, cinematic memorial display with guest messages and moderation.",
+  "private": true,
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "test": "node --disable-warning=ExperimentalWarning test/acceptance.mjs"
+  },
+  "license": "UNLICENSED"
+}

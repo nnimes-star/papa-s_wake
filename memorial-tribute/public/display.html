@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex">
+  <title>In Loving Memory</title>
+  <link rel="stylesheet" href="/display.css">
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <div class="frame" id="frame">
+    <i class="u-probe" id="uProbe" aria-hidden="true"></i>
+    <div class="glow" aria-hidden="true"></div>
+
+    <!-- Floating keywords: stay in the outer bands and the gutter, never behind content. -->
+    <div class="lane lane-top" id="laneTop" aria-hidden="true"></div>
+    <div class="lane lane-bottom" id="laneBottom" aria-hidden="true"></div>
+    <div class="lane lane-gutter" id="laneGutter" aria-hidden="true"></div>
+
+    <main class="stage">
+      <section class="portrait" id="portrait">
+        <div class="portrait-box" id="portraitBox">
+          <img class="portrait-bg" id="portraitBg" alt="" aria-hidden="true">
+          <img class="portrait-img" id="portraitImg" alt="Portrait">
+          <p class="portrait-empty" id="portraitEmpty">The portrait will appear here.</p>
+          <div class="vignette" aria-hidden="true"></div>
+        </div>
+        <p class="caption" id="caption"><span class="caption-name" id="captionName"></span><span class="caption-dates" id="captionDates"></span></p>
+      </section>
+
+      <section class="right">
+        <div class="message-area" id="messageArea" aria-live="polite">
+          <article class="slide" id="slideA"><blockquote class="text"></blockquote><p class="sender"></p></article>
+          <article class="slide" id="slideB"><blockquote class="text"></blockquote><p class="sender"></p></article>
+        </div>
+
+        <footer class="invite">
+          <div class="invite-text">
+            <p class="invite-line">Share a prayer or a message in his memory.</p>
+            <p class="invite-url" id="inviteUrl"></p>
+          </div>
+          <img class="qr" id="qr" src="/qr.svg" alt="QR code to leave a message" width="200" height="200">
+        </footer>
+      </section>
+    </main>
+  </div>
+
+  <pre class="debug" id="debug" hidden></pre>
+  <script src="/display.js"></script>
+</body>
+</html>

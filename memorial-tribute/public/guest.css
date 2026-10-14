@@ -1,0 +1,60 @@
+.wrap {
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: max(1.5rem, env(safe-area-inset-top)) 1.1rem max(2rem, env(safe-area-inset-bottom));
+}
+
+.hero { text-align: center; padding: 1rem 0 1.6rem; }
+.avatar {
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 1.1rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 0 40px rgba(217, 178, 111, 0.18);
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; display: block; }
+.eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--warm);
+}
+h1 {
+  margin: 0 0 0.7rem;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(1.7rem, 7vw, 2.3rem);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.lede { margin: 0 auto; max-width: 28rem; color: var(--soft); }
+
+.card {
+  padding: 1.4rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  backdrop-filter: blur(6px);
+}
+.count { display: block; margin-top: 0.35rem; text-align: right; color: var(--faint); }
+.count.near { color: var(--warm); }
+.btn-block { width: 100%; }
+.fineprint { margin: 0.9rem 0 0; text-align: center; font-size: 0.85rem; color: var(--faint); }
+
+.done { text-align: center; padding: 2rem 1.2rem; }
+.done h2 { margin: 0.6rem 0 0.4rem; font-family: var(--serif); font-weight: 400; font-size: 1.7rem; }
+.done p { margin: 0 0 1.4rem; color: var(--soft); }
+.check {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  color: #1a1408;
+  background: var(--warm);
+}

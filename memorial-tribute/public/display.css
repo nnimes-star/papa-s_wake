@@ -1,0 +1,326 @@
+/* Cinematic memorial display.
+   One design unit --u is 1/100 of the width of a 16:9 frame that fits the screen,
+   so the same composition holds from a laptop to a 4K television. */
+
+:root {
+  --u: min(1vw, 1.777778vh);
+  --bg-0: #060a13;
+  --bg-1: #0b1424;
+  --bg-2: #14233f;
+  --ink: #f3ecdf;
+  --ink-soft: rgba(236, 226, 208, 0.72);
+  --warm: #d9b26f;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", "Hoefler Text", Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-0);
+  color: var(--ink);
+  font-family: var(--serif);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body.idle { cursor: none; }
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 80% at 26% 48%, var(--bg-2) 0%, transparent 70%),
+    radial-gradient(ellipse 120% 100% at 50% 50%, var(--bg-1) 0%, var(--bg-0) 100%);
+}
+
+/* 16:9 frame, letterboxed on other screens (the bars match the backdrop). */
+.frame {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(100vw, 177.777778vh);
+  height: min(100vh, 56.25vw);
+  transform: translate(-50%, -50%);
+}
+
+.u-probe { position: absolute; width: var(--u); height: 0; visibility: hidden; pointer-events: none; }
+
+.glow {
+  position: absolute;
+  left: -4%;
+  top: 4%;
+  width: 56%;
+  height: 92%;
+  background: radial-gradient(closest-side, rgba(224, 178, 108, 0.15), rgba(224, 178, 108, 0) 100%);
+  animation: breathe 28s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes breathe {
+  0%, 100% { opacity: 0.65; }
+  50% { opacity: 1; }
+}
+
+/* ───────── layout ───────── */
+.stage {
+  position: absolute;
+  inset: 0;
+  padding: calc(var(--u) * 5.2) calc(var(--u) * 3.2);
+  display: grid;
+  grid-template-columns: calc(var(--u) * 40) calc(var(--u) * 45);
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+/* ───────── portrait ───────── */
+.portrait {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+}
+.portrait-box {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: calc(var(--u) * 0.45);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow:
+    0 calc(var(--u) * 2.4) calc(var(--u) * 6) rgba(0, 0, 0, 0.55),
+    0 0 calc(var(--u) * 9) rgba(217, 178, 111, 0.1);
+}
+.portrait-img,
+.portrait-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.portrait-img.ready { opacity: 1; }
+.portrait-img { object-fit: cover; }
+.portrait-img.contain { object-fit: contain; }
+/* A soft, blurred copy fills the box when the photo's shape does not match it,
+   so the face is never cropped or stretched. */
+.portrait-bg {
+  object-fit: cover;
+  filter: blur(calc(var(--u) * 1.8)) brightness(0.45) saturate(0.9);
+  transform: scale(1.15);
+}
+.portrait-bg.show { opacity: 1; }
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 calc(var(--u) * 5) calc(var(--u) * 0.4) rgba(5, 9, 18, 0.5);
+}
+.portrait-empty {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: calc(var(--u) * 3);
+  font-style: italic;
+  font-size: calc(var(--u) * 1.6);
+  color: var(--ink-soft);
+}
+.portrait.no-portrait .portrait-empty { display: flex; }
+
+.caption { display: none; padding-top: calc(var(--u) * 1.4); text-align: center; }
+.portrait.has-caption .caption { display: block; }
+.caption-name { display: block; font-size: calc(var(--u) * 2.1); letter-spacing: 0.02em; }
+.caption-dates {
+  display: block;
+  margin-top: calc(var(--u) * 0.3);
+  font-size: calc(var(--u) * 1.25);
+  letter-spacing: 0.22em;
+  color: var(--ink-soft);
+}
+.caption-dates:empty { display: none; }
+
+/* ───────── messages ───────── */
+.right {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  row-gap: calc(var(--u) * 2);
+  min-height: 0;
+}
+.message-area { position: relative; min-height: 0; }
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  opacity: 0;
+  transform: translateY(calc(var(--u) * 0.8));
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  pointer-events: none;
+}
+.slide.visible {
+  opacity: 1;
+  transform: none;
+  /* The incoming message waits for the outgoing one to mostly clear, so words never overlap. */
+  transition: opacity 1.3s ease 0.45s, transform 1.6s ease 0.45s;
+}
+
+.text {
+  --fs: 2.4;
+  font-size: calc(var(--u) * var(--fs));
+  line-height: 1.42;
+  font-weight: 400;
+  color: var(--ink);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+  max-width: 100%;
+  quotes: none;
+  letter-spacing: 0.005em;
+  text-shadow: 0 0 calc(var(--u) * 2) rgba(0, 0, 0, 0.35);
+}
+.slide.placeholder .text { font-style: italic; color: var(--ink-soft); }
+.slide.placeholder .sender { display: none; }
+
+.sender {
+  margin-top: calc(var(--u) * 2.2);
+  padding-top: calc(var(--u) * 1.3);
+  position: relative;
+  font-size: calc(var(--u) * 1.55);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.sender::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(var(--u) * 3.6);
+  height: 1px;
+  background: linear-gradient(to right, var(--warm), rgba(217, 178, 111, 0));
+}
+
+/* ───────── invitation + QR ───────── */
+.invite {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: calc(var(--u) * 1.8);
+}
+.invite-text { text-align: right; padding-bottom: calc(var(--u) * 0.4); max-width: calc(var(--u) * 28); }
+.invite-line { font-size: calc(var(--u) * 1.5); line-height: 1.4; font-style: italic; color: var(--ink-soft); }
+.invite-url {
+  margin-top: calc(var(--u) * 0.6);
+  font-size: calc(var(--u) * 1.05);
+  letter-spacing: 0.06em;
+  color: rgba(236, 226, 208, 0.5);
+  overflow-wrap: anywhere;
+}
+.invite-url:empty { display: none; }
+.qr {
+  flex: none;
+  display: block;
+  width: calc(var(--u) * 10.4);
+  height: calc(var(--u) * 10.4);
+  border-radius: calc(var(--u) * 0.5);
+  background: #fff;
+  box-shadow: 0 calc(var(--u) * 0.6) calc(var(--u) * 2) rgba(0, 0, 0, 0.45);
+}
+
+/* ───────── floating keywords ───────── */
+.lane { position: absolute; overflow: hidden; pointer-events: none; }
+.lane-top, .lane-bottom {
+  left: 0;
+  right: 0;
+  height: calc(var(--u) * 4.2);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 14%, #000 86%, transparent);
+}
+.lane-top { top: calc(var(--u) * 0.5); }
+.lane-bottom { bottom: calc(var(--u) * 0.5); }
+
+.lane-gutter {
+  left: calc(var(--u) * 44.8);
+  width: calc(var(--u) * 5.4);
+  top: calc(var(--u) * 5.2);
+  bottom: calc(var(--u) * 5.2);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+}
+
+.kw {
+  position: absolute;
+  white-space: nowrap;
+  font-style: italic;
+  color: var(--ink);
+  opacity: var(--o, 0.1);
+  font-size: calc(var(--u) * var(--s, 2.6));
+  will-change: transform;
+}
+.lane-top .kw, .lane-bottom .kw {
+  left: 0;
+  top: var(--y, 0);
+  animation: drift-x var(--d, 200s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+.lane-gutter .kw {
+  left: var(--x, 0);
+  top: 0;
+  animation: drift-y var(--d, 160s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes drift-x {
+  from { transform: translateX(calc(var(--u) * -14)); }
+  to { transform: translateX(calc(var(--u) * 104)); }
+}
+@keyframes drift-y {
+  from { transform: translateY(calc(var(--u) * 42)); }
+  to { transform: translateY(calc(var(--u) * -6)); }
+}
+
+/* ───────── narrow / portrait screens: stack without cropping the face ───────── */
+@media (max-aspect-ratio: 1/1) {
+  :root { --u: min(2.2vw, 1.3vh); }
+  .frame { width: 100vw; height: 100vh; height: 100dvh; }
+  .stage {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--u) * 1.6);
+    padding: calc(var(--u) * 4) calc(var(--u) * 3);
+  }
+  .portrait { flex: 0 0 40%; }
+  .right { flex: 1 1 auto; }
+  .lane-gutter { display: none; }
+  .lane-top .kw, .lane-bottom .kw { --s: 2; }
+  .qr { width: calc(var(--u) * 12); height: calc(var(--u) * 12); }
+  .invite-text { max-width: none; }
+  .glow { width: 100%; left: 0; height: 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kw, .glow { animation: none; }
+  .slide, .slide.visible { transform: none; }
+}
+
+/* ───────── debug overlay (?debug=1) ───────── */
+.debug {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 10;
+  padding: 6px 8px;
+  font: 11px/1.4 ui-monospace, Menlo, monospace;
+  color: #9fe;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  white-space: pre;
+}

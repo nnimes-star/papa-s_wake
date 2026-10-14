@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Moderation</title>
+  <link rel="stylesheet" href="/base.css">
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+  <!-- Sign in -->
+  <main class="login" id="loginView" hidden>
+    <form class="panel login-card" id="loginForm">
+      <p class="eyebrow">Administrator</p>
+      <h1>Sign in</h1>
+      <div id="loginError" class="notice notice-error" role="alert" hidden></div>
+      <label class="field">
+        <span>Password</span>
+        <input type="password" id="password" autocomplete="current-password" required>
+      </label>
+      <button class="btn btn-primary btn-block" type="submit" id="loginBtn">Sign in</button>
+    </form>
+  </main>
+
+  <!-- Moderation -->
+  <div class="shell" id="adminView" hidden>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Administrator</p>
+        <h1>Moderation</h1>
+      </div>
+      <nav class="topbar-actions" aria-label="Pages">
+        <a class="btn btn-small" href="/display" target="_blank" rel="noopener">Open TV display</a>
+        <a class="btn btn-small" href="/" target="_blank" rel="noopener">Guest page</a>
+        <button class="btn btn-small" id="logoutBtn" type="button">Sign out</button>
+      </nav>
+    </header>
+
+    <section class="panel" aria-labelledby="msgHeading">
+      <div class="panel-head">
+        <h2 id="msgHeading">Messages</h2>
+        <p class="summary" id="summary" aria-live="polite"></p>
+      </div>
+
+      <div class="toolbar">
+        <div class="tabs" role="group" aria-label="Filter by status">
+          <button class="tab" type="button" data-filter="all" aria-pressed="true">All</button>
+          <button class="tab" type="button" data-filter="published" aria-pressed="false">Published</button>
+          <button class="tab" type="button" data-filter="hidden" aria-pressed="false">Hidden</button>
+        </div>
+        <input type="search" id="search" class="search" placeholder="Search name or message" aria-label="Search messages">
+      </div>
+
+      <ul class="list" id="list"></ul>
+      <p class="empty" id="empty" hidden>No messages yet. New submissions appear here the moment they arrive.</p>
+    </section>
+
+    <details class="panel settings" id="settings">
+      <summary><h2>Display settings</h2></summary>
+
+      <div class="settings-grid">
+        <div class="setting-block">
+          <h3>Portrait</h3>
+          <div class="portrait-preview" id="portraitPreview">
+            <img id="portraitPreviewImg" alt="Current portrait" hidden>
+            <span id="portraitPreviewEmpty">No portrait yet</span>
+          </div>
+          <div class="row">
+            <label class="btn btn-small" for="portraitFile">Choose photograph…</label>
+            <input type="file" id="portraitFile" class="visually-hidden" accept="image/jpeg,image/png,image/webp">
+            <button class="btn btn-small btn-danger" type="button" id="portraitRemove" hidden>Remove</button>
+          </div>
+          <label class="field focus">
+            <span>Vertical focus <output id="focusOut">30</output>%</span>
+            <input type="range" id="focusY" min="0" max="100" step="1" value="30">
+            <small>Used when the photograph is cropped to fill the frame. Raise it to keep more of the top of the photo.</small>
+          </label>
+        </div>
+
+        <div class="setting-block">
+          <h3>Caption &amp; timing</h3>
+          <label class="field"><span>Name under the portrait (optional)</span>
+            <input type="text" id="displayName" maxlength="80" placeholder="Leave empty for no caption"></label>
+          <label class="field"><span>Dates (optional)</span>
+            <input type="text" id="dates" maxlength="40" placeholder="e.g. 1950 – 2026"></label>
+          <label class="field"><span>Seconds per message</span>
+            <input type="number" id="rotationSeconds" min="8" max="120" step="1" value="20"></label>
+        </div>
+
+        <div class="setting-block wide">
+          <h3>Guest page address (QR code)</h3>
+          <label class="field">
+            <span>Address guests are sent to</span>
+            <input type="url" id="guestUrl" placeholder="Automatic">
+            <small id="guestUrlHelp"></small>
+          </label>
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn btn-primary" type="button" id="saveSettings">Save settings</button>
+      </div>
+    </details>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script src="/admin.js"></script>
+</body>
+</html>
